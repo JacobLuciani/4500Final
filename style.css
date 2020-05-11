@@ -1,0 +1,60 @@
+html, body {
+    margin: 0;
+}
+
+html {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+    height: inherit;
+}
+
+h1 {
+    font-size: 1rem;
+    letter-spacing: -1px;
+    position: absolute;
+    margin: 0;
+    top: 5px;
+    right: 105px;
+
+    color: green;
+}
+
+h2 {
+    font-size: 1rem;
+    letter-spacing: -1px;
+    position: absolute;
+    margin: 0;
+    top: 5px;
+    right: 15px;
+
+    color: red;
+}
+
+#ballpitPanel {
+    position: absolute;
+    width: 95%;
+}
+
+.ballpitStyle {
+    position: absolute;
+}
+
+.playStyle {
+    font-size: 10px;
+    text-align: center;
+    padding: 5px 5px;
+    height: 25px;
+    width: 70px;
+    position: absolute;
+    border: none;
+    background-color: teal;
+    color: white;
+}
+
+.disabledButton {
+    background-color: gray !important;
+}
