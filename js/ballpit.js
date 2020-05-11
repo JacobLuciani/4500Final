@@ -128,6 +128,20 @@ let balls = ballpit.balls
 let uninfected = 0
 let requestId
 let loopCount = 0
+
+function drawInitial() {
+  ballpitCtx.fillStyle = 'rgba(0,0,0,1)'
+  ballpitCtx.fillRect(0, 0, width, height)
+  uninfected = ballpit.getUninfected()
+  for (let i = 0; i < balls.length; i++) {
+    balls[i].draw()
+  }
+  elem1.innerHTML = '<h1>' + uninfected + '</h1>'
+  elem2.innerHTML = '<h2>' + ballpit.getInfected() + '</h2>'
+  timer.innerHTML = '<h3>' + (loopCount/60) + '.0</h3>'
+}
+drawInitial()
+
 function loop() {
   ballpitCtx.fillStyle = 'rgba(0,0,0,0.75)'
   ballpitCtx.fillRect(0, 0, width, height)
@@ -165,5 +179,3 @@ function loop() {
     cancelAnimationFrame(requestId)
   }
 }
-
-loop()

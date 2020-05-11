@@ -35,7 +35,7 @@ const playButton = newButton("RESET", playTop, replay)
 playButton.style.height = buttonHeight + "px"
 
 const pauseTop = (buttonHeight + 10 + topDim) + "px"
-const pauseButton = newButton("PAUSE", pauseTop, pause)
+const pauseButton = newButton("PLAY", pauseTop, pause)
 
 const switchTop = (2 * buttonHeight + 15 + topDim) + "px"
 const switchButton = newButton("SWITCH", switchTop, switchScenario)
@@ -53,17 +53,20 @@ let timer = document.createElement('timer')
 panel.appendChild(timer)
 
 function replay() {
+    loopCount =  0
     pauseButton.disabled = false
     pauseButton.classList.remove("disabledButton")
 
     cancelAnimationFrame(requestId)
 
-    if (pauseButton.innerHTML === "PLAY") {
-        pauseButton.innerHTML = "PAUSE"
+    if (pauseButton.innerHTML === "PAUSE") {
+        pauseButton.innerHTML = "PLAY"
     }
     ballpit.setup()
+
     balls = ballpit.balls
-    loop()
+
+    drawInitial()
 }
 
 function pause() {
@@ -80,13 +83,13 @@ let scenario = 0
 
 function switchScenario() {
     if (scenario === 0) {
-        ballpit.setNewStart(5, 100)
+        ballpit.setNewStart(1, 100)
         scenario = 1
     } else if (scenario === 1) {
         ballpit.setNewStart(1, 3)
         scenario = 2
     } else if (scenario === 2) {
-        ballpit.setNewStart(5, 30)
+        ballpit.setNewStart(1, 30)
         scenario = 0
     }
     replay()
