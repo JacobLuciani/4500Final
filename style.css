@@ -34,6 +34,16 @@ h2 {
     color: red;
 }
 
+h3 {
+    font-size: 3rem;
+    letter-spacing: -1px;
+    position: absolute;
+    margin: 0;
+    top: 5px;
+    left: 100px;
+    color: white;
+}
+
 #ballpitPanel {
     position: absolute;
     width: 95%;

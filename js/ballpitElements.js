@@ -37,8 +37,11 @@ playButton.style.height = buttonHeight + "px"
 const pauseTop = (buttonHeight + 10 + topDim) + "px"
 const pauseButton = newButton("PAUSE", pauseTop, pause)
 
-switchTop = (2 * buttonHeight + 15 + topDim) + "px"
+const switchTop = (2 * buttonHeight + 15 + topDim) + "px"
 const switchButton = newButton("SWITCH", switchTop, switchScenario)
+
+const addTop = (3 * buttonHeight + 20 + topDim) + "px"
+const addButton = newButton("ADD", addTop, add10)
 
 let elem1 = document.createElement('label1')
 panel.appendChild(elem1)
@@ -46,14 +49,16 @@ panel.appendChild(elem1)
 let elem2 = document.createElement('label2')
 panel.appendChild(elem2)
 
-//console.log(hi, hi)
-function replay(count) {
+let timer = document.createElement('timer')
+panel.appendChild(timer)
+
+function replay() {
     pauseButton.disabled = false
     pauseButton.classList.remove("disabledButton")
 
     cancelAnimationFrame(requestId)
 
-    if (pauseButton.innerHTML == "PLAY") {
+    if (pauseButton.innerHTML === "PLAY") {
         pauseButton.innerHTML = "PAUSE"
     }
     ballpit.setup()
@@ -62,7 +67,7 @@ function replay(count) {
 }
 
 function pause() {
-    if (pauseButton.innerHTML == "PAUSE") {
+    if (pauseButton.innerHTML === "PAUSE") {
         cancelAnimationFrame(requestId)
         pauseButton.innerHTML = "PLAY"
     } else {
@@ -71,18 +76,27 @@ function pause() {
     }
 }
 
-var scenario = 0
+let scenario = 0
 
 function switchScenario() {
-    if (scenario == 0) {
+    if (scenario === 0) {
         ballpit.setNewStart(5, 100)
         scenario = 1
-    } else if (scenario == 1) {
+    } else if (scenario === 1) {
         ballpit.setNewStart(1, 3)
         scenario = 2
-    } else if (scenario == 2) {
+    } else if (scenario === 2) {
         ballpit.setNewStart(5, 30)
         scenario = 0
     }
+    replay()
+}
+
+function add10() {
+    let start = ballpit.startParameters
+    //console.log(ballpit.startParameters)
+    start.totalPopulation += 10
+    //console.log(start)
+    ballpit.setNewStart(start.initialInfected, start.totalPopulation)
     replay()
 }

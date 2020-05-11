@@ -124,40 +124,46 @@ class Ballpit {
 let ballpit = new Ballpit(5, 30)
 //ballpit.setup(1,10)
 //ballpit.loop()
-var balls = ballpit.balls
-var uninfected = 0
-
+let balls = ballpit.balls
+let uninfected = 0
+let requestId
+let loopCount = 0
 function loop() {
-    ballpitCtx.fillStyle = 'rgba(0,0,0,0.75)'
+  ballpitCtx.fillStyle = 'rgba(0,0,0,0.75)'
+  ballpitCtx.fillRect(0, 0, width, height)
+  //console.log(this.balls)
+  for (let i = 0; i < balls.length; i++) {
+    balls[i].draw()
+    balls[i].update()
+    ballpit.detectCollision(balls[i])
+  }
+
+  uninfected = ballpit.getUninfected()
+  elem1.innerHTML = '<h1>' + uninfected + '</h1>'
+  elem2.innerHTML = '<h2>' + ballpit.getInfected() + '</h2>'
+
+  loopCount++
+  if (loopCount % 6 === 0) {
+    let seconds = loopCount/60
+    if (Number.isInteger(seconds)) {
+      timer.innerHTML = '<h3>' + (loopCount/60) + '.0</h3>'
+    } else {
+      timer.innerHTML = '<h3>' + (loopCount/60) + '</h3>'
+    }
+  }
+
+  requestId = requestAnimationFrame(loop)
+
+  if(uninfected === 0) {
+    ballpitCtx.fillStyle = 'rgba(0,0,0,1.0)'
     ballpitCtx.fillRect(0, 0, width, height)
-    //console.log(this.balls)
     for (let i = 0; i < balls.length; i++) {
       balls[i].draw()
-      balls[i].update()
-      ballpit.detectCollision(balls[i])
     }
-
-    uninfected = ballpit.getUninfected()
-    elem1.innerHTML = '<h1>' + uninfected + '</h1>'
-    elem2.innerHTML = '<h2>' + ballpit.getInfected() + '</h2>'
-    requestId = requestAnimationFrame(loop)
-
-    if(uninfected == 0) {
-      ballpitCtx.fillStyle = 'rgba(0,0,0,1.0)'
-      ballpitCtx.fillRect(0, 0, width, height)
-      for (let i = 0; i < balls.length; i++) {
-        balls[i].draw()
-      }
-      pauseButton.disabled = true
-      pauseButton.classList.add("disabledButton")
-      cancelAnimationFrame(requestId)
-    }
+    pauseButton.disabled = true
+    pauseButton.classList.add("disabledButton")
+    cancelAnimationFrame(requestId)
+  }
 }
 
 loop()
-
-var requestId
-
-
-// define loop that keeps drawing the scene constantly
-
