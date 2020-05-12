@@ -3,13 +3,23 @@ const topDim = 10
 const buttonHeight = 25
 const buttonWidth = 70
 
-const panel = document.getElementById("ballpitPanel")
-let panelHeight = Math.min(window.innerHeight, 500)
-let panelWidth = Math.min((window.innerWidth - 100), 800);
+const ballpitCanvas = document.createElement("CANVAS")
+ballpitPanel.appendChild(ballpitCanvas)
 
-panel.style.height =  panelHeight + "px"
-panel.style.width = panelWidth + "px"
-panel.style.left = "100px"
+class OptionsManager {
+    constructor(gradeLevel = 0) {
+        this.gradeLevel = gradeLevel
+    }
+
+    setGradeLevel(newGradeLevel) {
+        this.gradeLevel = newGradeLevel
+        this.setupButtons()
+    }
+
+    setupButtons() {
+
+    }
+}
 
 function newButton(name, top, onClick, style = "playStyle") {
     //console.log(name)
@@ -20,16 +30,16 @@ function newButton(name, top, onClick, style = "playStyle") {
     newButton.style.top = top
     newButton.onclick = function() { onClick() }
 
-    panel.appendChild(newButton);
+    ballpitPanel.appendChild(newButton);
     return newButton
 }
 
 
-const ballpitCanvas = document.querySelector("#ballpit")
+//const ballpitCanvas = document.querySelector("#ballpit")
 const ballpitCtx = ballpitCanvas.getContext('2d')
 
-const width = (ballpitCanvas.width = panel.clientWidth - (leftDim * 2 + buttonWidth))
-const height = (ballpitCanvas.height = panel.clientHeight - 50) //fix
+const width = (ballpitCanvas.width = ballpitPanel.clientWidth - (leftDim * 2 + buttonWidth))
+const height = (ballpitCanvas.height = ballpitPanel.clientHeight - 50) //fix
 
 ballpitCanvas.classList.add("ballpitStyle")
 //panel.style.top = topDim + "px"
@@ -51,13 +61,13 @@ const addTop = (3 * buttonHeight + 20 + topDim) + "px"
 const addButton = newButton("ADD", addTop, add10)
 
 let elem1 = document.createElement('label1')
-panel.appendChild(elem1)
+ballpitPanel.appendChild(elem1)
 
 let elem2 = document.createElement('label2')
-panel.appendChild(elem2)
+ballpitPanel.appendChild(elem2)
 
 let timer = document.createElement('timer')
-panel.appendChild(timer)
+ballpitPanel.appendChild(timer)
 
 function replay() {
     loopCount =  0
@@ -74,14 +84,17 @@ function replay() {
     balls = ballpit.balls
 
     drawInitial()
+    remakeGraph()
 }
 
 function pause() {
     if (pauseButton.innerHTML === "PAUSE") {
         cancelAnimationFrame(requestId)
+        stopGraph()
         pauseButton.innerHTML = "PLAY"
     } else {
         requestId = loop()
+        startGraph()
         pauseButton.innerHTML = "PAUSE"
     }
 }

@@ -45,8 +45,17 @@ h3 {
 }
 
 #ballpitPanel {
+    background: grey;
     position: absolute;
-    width: 95%;
+}
+
+#chartPanel {
+    background: teal;
+    position: absolute;
+}
+
+#chart {
+    height: 250px;
 }
 
 .ballpitStyle {

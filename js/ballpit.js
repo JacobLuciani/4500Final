@@ -48,6 +48,15 @@ class Ballpit {
     this.setup(initialInfected, totalPopulation)
   }
 
+  addToHistory(loopCount) {
+    this.history[0].push(loopCount)
+    this.history[1].push(this.infectedCount)
+  }
+
+  setGradeLevel(newGradeLevel) {
+    this.gradeLevel = newGradeLevel
+  }
+
   setNewStart(initialInfected, totalPopulation) {
     this.startParameters = {initialInfected, totalPopulation}
   }
@@ -56,20 +65,19 @@ class Ballpit {
     return this.infectedCount
   }
 
-  getPopulation() {
-    return this.totalPopulation
-  }
-
   getUninfected() {
     return (this.totalPopulation - this.infectedCount)
   }
 
   setup() {
+
     this.balls = []
 
     this.infectedCount = this.startParameters.initialInfected
     this.initialInfected = this.startParameters.initialInfected
     this.totalPopulation = this.startParameters.totalPopulation
+    this.history = [[0],[this.initialInfected]]
+
 
     this.makeBalls()
   }
@@ -78,7 +86,7 @@ class Ballpit {
 
     while (this.balls.length < this.totalPopulation) {
 
-      const size = 10
+      const size = 3
       let ball = new Ball(
           // ball position always drawn at least one ball width
           // away from the adge of the canvas, to avoid drawing errors
@@ -164,6 +172,7 @@ function loop() {
     } else {
       timer.innerHTML = '<h3>' + (loopCount/60) + '</h3>'
     }
+    ballpit.addToHistory(loopCount)
   }
 
   requestId = requestAnimationFrame(loop)
@@ -177,5 +186,6 @@ function loop() {
     pauseButton.disabled = true
     pauseButton.classList.add("disabledButton")
     cancelAnimationFrame(requestId)
+    stopGraph()
   }
 }

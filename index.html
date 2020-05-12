@@ -2,21 +2,31 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <title>Bouncing balls</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ballpitStyles.css">
 </head>
 
 <body>
 
-<div id="ballpitPanel">
-    <canvas id="ballpit"></canvas>
+<div id="ballpitPanel"></div>
+<div id="chartPanel">
+    <!--Buttons to try to start and stop the constant update -->
+    <!--Div below is where the graph is displayed -->
+    <div id="chart" style="width:100%"></div>
 </div>
-<canvas id="chart"></canvas>
 
 
 <!--<script src="test.js"></script>-->
+<script src ="js/displayPanel.js"></script>
 <script src="js/ballpitElements.js"></script>
 <script src="js/ballpit.js"></script>
+<script src="js/chart.js"></script>
 <!--<script src="chart.js"></script>
 
 <button onclick="replay(10)"">Hi</button>
