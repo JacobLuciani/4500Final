@@ -38,9 +38,9 @@ function newButton(name, top, onClick, style = "playStyle") {
 //const ballpitCanvas = document.querySelector("#ballpit")
 const ballpitCtx = ballpitCanvas.getContext('2d')
 
-const width = (ballpitCanvas.width = ballpitPanel.clientWidth - (leftDim * 2 + buttonWidth))
-const height = (ballpitCanvas.height = ballpitPanel.clientHeight - 50) //fix
-
+const width = (ballpitCanvas.width = ballpitPanel.clientWidth - buttonWidth)
+const height = (ballpitCanvas.height = ballpitPanel.clientHeight) //fix
+//console.log(displayPanelHeight)
 ballpitCanvas.classList.add("ballpitStyle")
 //panel.style.top = topDim + "px"
 //panel.style.left = leftDim + "px"
