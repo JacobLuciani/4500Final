@@ -3,30 +3,37 @@ const topDim = 10
 const buttonHeight = 25
 const buttonWidth = 70
 
+const panel = document.getElementById("ballpitPanel")
+let panelHeight = Math.min(window.innerHeight, 500)
+let panelWidth = Math.min((window.innerWidth - 100), 800);
+
+panel.style.height =  panelHeight + "px"
+panel.style.width = panelWidth + "px"
+panel.style.left = "100px"
+
 function newButton(name, top, onClick, style = "playStyle") {
     //console.log(name)
     const newButton = document.createElement("BUTTON");
     newButton.innerHTML = name
     newButton.classList.add(style)
-    newButton.style.left = leftDim + 5 + "px"
+    newButton.style.left = 5 + "px"
     newButton.style.top = top
     newButton.onclick = function() { onClick() }
 
-    document.body.appendChild(newButton);
+    panel.appendChild(newButton);
     return newButton
 }
 
-const panel = document.getElementById("ballpitPanel")
 
 const ballpitCanvas = document.querySelector("#ballpit")
 const ballpitCtx = ballpitCanvas.getContext('2d')
 
 const width = (ballpitCanvas.width = panel.clientWidth - (leftDim * 2 + buttonWidth))
-const height = (ballpitCanvas.height = window.innerHeight - 50) //fix
+const height = (ballpitCanvas.height = panel.clientHeight - 50) //fix
 
 ballpitCanvas.classList.add("ballpitStyle")
-panel.style.top = topDim + "px"
-panel.style.left = leftDim + "px"
+//panel.style.top = topDim + "px"
+//panel.style.left = leftDim + "px"
 
 ballpitCanvas.style.left = (leftDim + buttonWidth) + "px"
 
