@@ -4,11 +4,13 @@
 //PROGRAMMERS: Jacob Luciani - Jacob.Luciani@gmail.com
 //COURSE: 4500-002 SP2020
 //DATE FINISHED: 05/12/2020
-//DESCRIPTION: Creates and positions buttons for ball pit game
+//DESCRIPTION: Manages ballpit model and graphical display
+//             includes functionality for animation as well as endpoints for data retrieval by other project components
 /*EXTERNAL RESOURCES USED:
 https://www.w3schools.com/howto/howto_js_add_class.asp
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
 https://www.w3schools.com/jsref/jsref_min.asp
+https://developer.mozilla.org/en-US/docs/Web/API/Window/cancelAnimationFrame
 
 SPECIAL RECOGNITION TO:
 https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Object_building_practice
@@ -148,12 +150,14 @@ class Ballpit {
       let y = 0
 
       //if number generated is below the "percent moving" variable, given a random velocity
-      //
+      //produces correct probability according to parameter
       if (moving < this.startParameters.portionMoving * 100 ) {
         numMoving++
         x = random(-2, 2)
         y = random(-2, 2)
       }
+
+      //create the new Ball object
       let ball = new Ball(
           // ball position always drawn at least one ball width
           // away from the adge of the canvas, to avoid drawing errors
@@ -161,30 +165,47 @@ class Ballpit {
           random(size, height - size),
           x,
           y,
-          'rgb(' + 0 + ',' + 255 + ',' + 0 + ')',
+          'rgb(' + 0 + ',' + 255 + ',' + 0 + ')', //green for uninfected
           size,
           false
       )
+
+      //the initial balls are made red and set to infected status
+      //continues until the set initialInfected parameter has been reached
       if (this.balls.length < this.initialInfected) {
         ball.color = 'rgb(' + 255 + ',' + 0 + ',' + 0 + ')'
         ball.infected = true
       }
+
+      //add the ball to the class object's array
       this.balls.push(ball)
     }
   }
 
+  //checks individual ball for collision with all balls contained within class object's array
   detectCollision(ball) {
+
+    //loop through and check for each ball
     for (let j = 0; j < balls.length; j++) {
+
+      //exclude "collision" between a ball and itself
       if (!(ball === balls[j])) {
+
+        //calculate the distance between the two balls
         const dx = ball.x - balls[j].x
         const dy = ball.y - balls[j].y
         const distance = Math.sqrt(dx * dx + dy * dy)
 
+        //compare the distance with the combined radii of the two balls
+        //if the distance is less, the balls are touching
         if (distance < ball.size + balls[j].size) {
 
+          //if the ball is not already infected, change its color and set it to infected
           if (balls[j].infected && !ball.infected) {
             ball.color = balls[j].color
             ball.infected = true
+
+            //increment the class object's counter for infected balls
             this.infectedCount++
           }
         }
@@ -193,70 +214,117 @@ class Ballpit {
   }
 }
 
+//create globally accessible object to manage game scenarios and settings
+//also creates necessary objects (ballpit)
 let manager = new OptionsManager()
+//retrieve the Ballpit object created by the manager
 let ballpit = manager.ballpit
 
-//let ballpit = new Ballpit([1,30])
+//run initial setup operations on the ballpit
 ballpit.setup()
+//retrieve array of balls for display
 let balls = ballpit.balls
+
+//tracks uninfected numbers for ease of use in display
 let uninfected = 0
+
+//store id of requestAnimationFrame for starting/stopping
 let requestId
+
+//track looping status and the game's "time" - converted from approximate 60 Hz provided by requestAnimationFrame
 let loopCount = 0
 let looping = false
 
+//Used to draw a single frame of the ballpit without animating
+//Allows for an image of all of the balls to be shown before animation begins
 function drawInitial() {
+
+  //first frame drawn completely opaque
   ballpitCtx.fillStyle = 'rgba(0,0,0,1)'
+  //set to fill full ballpit
   ballpitCtx.fillRect(0, 0, width, height)
+
+  //uninfected variable retrieved for display
   uninfected = ballpit.getUninfected()
+
+  //loop through and call each ball's draw function
   for (let i = 0; i < balls.length; i++) {
     balls[i].draw()
   }
+
+  //set contents of display labels
+  //elem1 - uninfected count
+  //elem2 - infected count
+  //timer - number of simulated seconds the animation has been running (based on 60 Hz)
   elem1.innerHTML = '<h1>' + uninfected + '</h1>'
   elem2.innerHTML = '<h2>' + ballpit.getInfected() + '</h2>'
   timer.innerHTML = '<h3>' + (loopCount/60) + '.0</h3>'
 }
+
+//draws the initial frame before animation begins
 drawInitial()
 
+//main animation loop function
 function loop() {
   looping = true
 
+  //set fill to 75% opacity to leave small trail/motion blur
+  //applied to whole ballpit
   ballpitCtx.fillStyle = 'rgba(0,0,0,0.75)'
   ballpitCtx.fillRect(0, 0, width, height)
 
+  //loop through and call each ball's draw function
   for (let i = 0; i < balls.length; i++) {
     balls[i].draw()
     balls[i].update()
     ballpit.detectCollision(balls[i])
   }
 
+  //set contents of display labels
+  //elem1 - uninfected count
+  //elem2 - infected count
   uninfected = ballpit.getUninfected()
   elem1.innerHTML = '<h1>' + uninfected + '</h1>'
   elem2.innerHTML = '<h2>' + ballpit.getInfected() + '</h2>'
 
+  //update system's simulated timer
   loopCount++
+  //ever six iterations is a simulated .1 second, so label must be updated
   if (loopCount % 6 === 0) {
+
     let seconds = loopCount/60
+
+    //ensure consistent inclusion of the decimal place in the timer
     if (Number.isInteger(seconds)) {
       timer.innerHTML = '<h3>' + (loopCount/60) + '.0</h3>'
     } else {
       timer.innerHTML = '<h3>' + (loopCount/60) + '</h3>'
     }
+    //update the ballpit's history data ever time the clock is updated
     ballpit.addToHistory(loopCount)
   }
-
+  //calls for animation on loop function
   requestId = requestAnimationFrame(loop)
 
+  //checks for total population infection, ends loop if no uninfected left
   if(uninfected === 0) {
+    //set opacity to 100% to remove tails in final screen
     ballpitCtx.fillStyle = 'rgba(0,0,0,1.0)'
     ballpitCtx.fillRect(0, 0, width, height)
+
+    //loop through and call each ball's draw function
+    //colors the last ball as "infected" before animation stops
     for (let i = 0; i < balls.length; i++) {
       balls[i].draw()
     }
+
+    //adjust pause button behavior and styling
     pauseButton.disabled = true
     pauseButton.classList.add("disabledButton")
 
     looping = false
 
+    //end animation and stop graph updating
     cancelAnimationFrame(requestId)
     stopGraph()
   }
