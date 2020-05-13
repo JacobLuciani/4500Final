@@ -1,3 +1,17 @@
+//PROJECT NAME: INFECTION GAME
+//FILE NAME: displayPanel.js
+//EXTERNAL FILES: N/A
+//PROGRAMMERS: Jacob Luciani - Jacob.Luciani@gmail.com
+//COURSE: 4500-002 SP2020
+//DATE FINISHED: 05/12/2020
+//DESCRIPTION: Creates and lays out div panels for ball pit game and tracker chart
+/*EXTERNAL RESOURCES USED:
+https://www.w3schools.com/jsref/dom_obj_canvas.asp
+https://www.w3schools.com/jsref/prop_html_id.asp
+https://medium.com/@theredwillows/moving-an-element-with-javascript-part-1-765c6a083d45https://medium.com/@theredwillows/moving-an-element-with-javascript-part-1-765c6a083d45
+*/
+
+
 //Set dimensions of game panels to respond to window size but not go above a limit size
 let displayPanelHeight = Math.min(window.innerHeight, 500)
 let displayPanelWidth = Math.min((window.innerWidth - 100), 600)

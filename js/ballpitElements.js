@@ -28,12 +28,11 @@ class OptionsManager {
     }
 
     setGradeLevel(newGradeLevel = -1) {
-        if (newGradeLevel == -1) {
+        if (newGradeLevel === -1) {
             this.gradeLevel = (this.gradeLevel + 1) % 2
         } else {
             this.gradeLevel = newGradeLevel
         }
-        console.log(newGradeLevel, this.gradeLevel)
         this.switchScenarios(0)
 
         //this.setupButtons()
@@ -76,10 +75,8 @@ const ballpitCtx = ballpitCanvas.getContext('2d')
 
 const width = (ballpitCanvas.width = ballpitPanel.clientWidth - buttonWidth - 10)
 const height = (ballpitCanvas.height = ballpitPanel.clientHeight) //fix
-//console.log(displayPanelHeight)
+
 ballpitCanvas.classList.add("ballpitStyle")
-//panel.style.top = topDim + "px"
-//panel.style.left = leftDim + "px"
 
 ballpitCanvas.style.left = (leftDim + buttonWidth) + "px"
 
@@ -111,25 +108,52 @@ function replay() {
     remakeGraph()
 }
 
+//Used to start/stop the animation loop
+//relabels the button to be consistent with its behavior
 function pause() {
     if (pauseButton.innerHTML === "PAUSE") {
-        cancelAnimationFrame(requestId)
-        stopGraph()
-        pauseButton.innerHTML = "PLAY"
+        looping = false
+        cancelAnimationFrame(requestId) //halt the animation loop
+        stopGraph() //stops the graph's updating
+        pauseButton.innerHTML = "PLAY" //switch button text
     } else {
-        requestId = loop()
-        startGraph()
-        pauseButton.innerHTML = "PAUSE"
+        requestId = loop() //start the animation loop
+        startGraph() //start the graph's updating
+        pauseButton.innerHTML = "PAUSE" //switch button text
     }
 }
 
-
-
 function add10() {
     let start = ballpit.startParameters
-    //console.log(ballpit.startParameters)
-    start.totalPopulation += 10
-    //console.log(start)
-    ballpit.setNewStart(start.initialInfected, start.totalPopulation)
-    replay()
+
+    lessButton.disabled = false
+    lessButton.classList.remove("disabledButton")
+
+    if (start.totalPopulation < 2000) {
+        start.totalPopulation += 10
+        ballpit.setNewStart(start.initialInfected, start.totalPopulation, start.portionMoving)
+        replay()
+    }
+    if ( start.totalPopulation >= 2000) {
+        moreButton.disabled = true
+        moreButton.classList.add("disabledButton")
+    }
+}
+
+function sub10() {
+    let start = ballpit.startParameters
+    console.log(start.totalPopulation)
+    moreButton.disabled = false
+    moreButton.classList.remove("disabledButton")
+
+    if (start.totalPopulation > 11) {
+        start.totalPopulation -= 10
+        ballpit.setNewStart(start.initialInfected, start.totalPopulation, start.portionMoving)
+        replay()
+    }
+    if( start.totalPopulation < 12) {
+        console.log("hia")
+        lessButton.disabled = true
+        lessButton.classList.add("disabledButton")
+    }
 }
