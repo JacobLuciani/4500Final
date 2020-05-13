@@ -43,13 +43,12 @@ Ball.prototype.update = function () {
 }
 
 class Ballpit {
-  constructor(initialInfected = 1, totalPopulation = 30) {
-    this.startParameters = {initialInfected, totalPopulation}
-    this.setup(initialInfected, totalPopulation)
+  constructor(scenario) {
+    this.setNewStart(scenario[0], scenario[1], scenario[2])
   }
 
   addToHistory(loopCount) {
-    this.history[0].push(loopCount)
+    this.history[0].push(loopCount/60)
     this.history[1].push(this.infectedCount)
   }
 
@@ -57,8 +56,9 @@ class Ballpit {
     this.gradeLevel = newGradeLevel
   }
 
-  setNewStart(initialInfected, totalPopulation) {
-    this.startParameters = {initialInfected, totalPopulation}
+  setNewStart(initialInfected, totalPopulation, portionMoving = 1) {
+    console.log(portionMoving)
+    this.startParameters = {initialInfected, totalPopulation, portionMoving}
   }
 
   getInfected() {
@@ -83,17 +83,26 @@ class Ballpit {
   }
 
   makeBalls() {
-
+    let numMoving = 0
+    console.log(this.startParameters.portionMoving)
     while (this.balls.length < this.totalPopulation) {
 
       const size = 3
+      let moving = random(0, 100)
+      let x = 0
+      let y = 0
+      if (moving < this.startParameters.portionMoving * 100 ) {
+        numMoving++
+        x = random(-2, 2)
+        y = random(-2, 2)
+      }
       let ball = new Ball(
           // ball position always drawn at least one ball width
           // away from the adge of the canvas, to avoid drawing errors
           random(size, width - size),
           random(size, height - size),
-          random(-2, 2),
-          random(-2, 2),
+          x,
+          y,
           'rgb(' + 0 + ',' + 255 + ',' + 0 + ')',
           size,
           false
@@ -106,6 +115,7 @@ class Ballpit {
       this.balls.push(ball)
         //console.log("healthy")
     }
+    console.log("Moving: ", numMoving)
     //return this.balls
   }
 
@@ -129,9 +139,11 @@ class Ballpit {
   }
 }
 
-let ballpit = new Ballpit(5, 30)
-//ballpit.setup(1,10)
-//ballpit.loop()
+let manager = new OptionsManager()
+let ballpit = manager.ballpit
+
+//let ballpit = new Ballpit([1,30])
+ballpit.setup()
 let balls = ballpit.balls
 let uninfected = 0
 let requestId

@@ -6,18 +6,54 @@ const buttonWidth = 70
 const ballpitCanvas = document.createElement("CANVAS")
 ballpitPanel.appendChild(ballpitCanvas)
 
+let scenarios = [[[1, 100, 1],[10, 100, 1],[1, 500, 1]],
+                 [[1, 100, .5],[1, 100, .2],[1, 100, .1]]]
+
+let scenario = 0
+
+function switchScenario() {
+    scenario = (scenario + 1) % 3
+    manager.switchScenarios(scenario)
+}
+
 class OptionsManager {
-    constructor(gradeLevel = 0) {
+
+    //takes in number associated with the grade level band
+    //0: K-2
+    constructor(gradeLevel = 1) {
+        this.scenario = scenarios[gradeLevel][0]
         this.gradeLevel = gradeLevel
+        this.ballpit = new Ballpit(this.scenario)
+        this.ballpit.setup()
     }
 
-    setGradeLevel(newGradeLevel) {
-        this.gradeLevel = newGradeLevel
-        this.setupButtons()
+    setGradeLevel(newGradeLevel = -1) {
+        if (newGradeLevel == -1) {
+            this.gradeLevel = (this.gradeLevel + 1) % 2
+        } else {
+            this.gradeLevel = newGradeLevel
+        }
+        console.log(newGradeLevel, this.gradeLevel)
+        this.switchScenarios(0)
+
+        //this.setupButtons()
     }
 
+    /* To be used for a Sandbox mode in grades 6-8
     setupButtons() {
 
+    }*/
+
+    //returns the current scenario
+    getScenario() {
+        return scenarios[this.gradeLevel][this.scenario]
+    }
+
+    //switches to scenario of given index in current grade level
+    switchScenarios(newScenario) {
+        this.scenario = scenarios[this.gradeLevel][newScenario]
+        this.ballpit.setNewStart(this.scenario[0], this.scenario[1], this.scenario[2])
+        replay()
     }
 }
 
@@ -38,7 +74,7 @@ function newButton(name, top, onClick, style = "playStyle") {
 //const ballpitCanvas = document.querySelector("#ballpit")
 const ballpitCtx = ballpitCanvas.getContext('2d')
 
-const width = (ballpitCanvas.width = ballpitPanel.clientWidth - buttonWidth)
+const width = (ballpitCanvas.width = ballpitPanel.clientWidth - buttonWidth - 10)
 const height = (ballpitCanvas.height = ballpitPanel.clientHeight) //fix
 //console.log(displayPanelHeight)
 ballpitCanvas.classList.add("ballpitStyle")
@@ -47,18 +83,6 @@ ballpitCanvas.classList.add("ballpitStyle")
 
 ballpitCanvas.style.left = (leftDim + buttonWidth) + "px"
 
-const playTop = topDim + 5 + "px"
-const playButton = newButton("RESET", playTop, replay)
-playButton.style.height = buttonHeight + "px"
-
-const pauseTop = (buttonHeight + 10 + topDim) + "px"
-const pauseButton = newButton("PLAY", pauseTop, pause)
-
-const switchTop = (2 * buttonHeight + 15 + topDim) + "px"
-const switchButton = newButton("SWITCH", switchTop, switchScenario)
-
-const addTop = (3 * buttonHeight + 20 + topDim) + "px"
-const addButton = newButton("ADD", addTop, add10)
 
 let elem1 = document.createElement('label1')
 ballpitPanel.appendChild(elem1)
@@ -99,21 +123,7 @@ function pause() {
     }
 }
 
-let scenario = 0
 
-function switchScenario() {
-    if (scenario === 0) {
-        ballpit.setNewStart(1, 100)
-        scenario = 1
-    } else if (scenario === 1) {
-        ballpit.setNewStart(1, 3)
-        scenario = 2
-    } else if (scenario === 2) {
-        ballpit.setNewStart(1, 30)
-        scenario = 0
-    }
-    replay()
-}
 
 function add10() {
     let start = ballpit.startParameters

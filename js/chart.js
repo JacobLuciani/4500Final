@@ -9,10 +9,10 @@ let layout = {
         fixedrange: true,
     },
     margin: {
-        l: 20,
+        l: 40,
         r: 20,
-        b: 20,
-        t: 20,
+        b: 25,
+        t: 0,
         pad: 0
     }
 };
@@ -26,12 +26,11 @@ let intervalVar
 function startGraph() {
 
     intervalVar = setInterval(function () {
+        let xDat = ballpit.history[0].slice(-1)
         let update = {
             x: [ballpit.history[0].slice(-1)],
             y: [ballpit.history[1].slice(-1)]
         }
-        //console.log(ballpit.history)
-        console.log(ballpit.history[0].slice(-1), ballpit.history[1].slice(-1))
 
         Plotly.extendTraces('chart', update, [0]);
         cnt++;
